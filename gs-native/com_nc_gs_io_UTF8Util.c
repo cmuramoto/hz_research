@@ -107,9 +107,9 @@ typedef __m128i vec;
 
 #define IS_ALIGNED(ptr,ALIGNMENT) ((long)(&(*ptr)) & (ALIGNMENT -1) ) == 0
 
-#define SCALAR_LOOP(c0,c1,c2,src,dst,len){\
+#define SCALAR_LOOP(c0,c1,c2,src,dst,len,rem){\
 \
-while (len > 0) { \
+while (len > 0 && rem > 0) { \
 	c0 = *src++; \
 	if (c0 > 0x7F) { \
 		src--; \
@@ -117,21 +117,35 @@ while (len > 0) { \
 	} \
 	*dst++ = c0; \
 	len--; \
+	rem--; \
 } \
 \
-while (len > 0) { \
+while (len > 0 && rem >0) { \
 	c0 = *src++ & 0xFF; \
+	len--; \
+	rem--; \
 	if (c0 <= 0x7F) { \
 		*dst++ = c0; \
 	} else if ((c0 >> 4) < 14) { \
-		c1 = ((*src++) & 0x3F); \
-		*dst++ = ((c0 & 0x1F) << 6 | c1); \
+		if(rem > 0) { \
+			c1 = ((*src++) & 0x3F); \
+			*dst++ = ((c0 & 0x1F) << 6 | c1); \
+			rem--; \
+		} \
+		else { \
+			return -1; \
+		} \
 	} else { \
-		c1 = ((*src++) & 0x3F) << 6; \
-		c2 = ((*src++) & 0x3F); \
-		*dst++ = ((c0 & 0x0F) << 12) | c1 | c2; \
+		if(rem > 1){ \
+			c1 = ((*src++) & 0x3F) << 6; \
+			c2 = ((*src++) & 0x3F); \
+			*dst++ = ((c0 & 0x0F) << 12) | c1 | c2; \
+			rem -= 2; \
+		} \
+		else { \
+			return -1; \
+		} \
 	} \
-	len--; \
 }\
 }
 
@@ -198,13 +212,14 @@ JNIEXPORT jint JNICALL Java_com_nc_gs_io_UTF8Util_utf8BytesToArray(JNIEnv* env,
 
 	unsigned short c0, c1, c2;
 	jsize len = (*env)->GetArrayLength(env, target);
+	jsize rem = (*env)->GetArrayLength(env, source) - off;
 	jbyte* _src = (*env)->GetPrimitiveArrayCritical(env, source, 0);
 	char* src = (char*) _src;
 	src += off;
 	jbyte* _dst = (*env)->GetPrimitiveArrayCritical(env, target, 0);
 	unsigned short* dst = (unsigned short*) &(*_dst);
 
-	while (len >= GS_CHUNK_SIZE) {
+	while (len >= GS_CHUNK_SIZE && rem >= GS_CHUNK_SIZE) {
 		vec chunk = loadVecU((vec*) src);
 
 		int asciiMask = computeMaskU(chunk);
@@ -294,7 +309,7 @@ JNIEXPORT jint JNICALL Java_com_nc_gs_io_UTF8Util_utf8BytesToArray(JNIEnv* env,
 						_mm_and_si128(_mm_slli_epi32(chunk_right, 4), V(0xf0)),
 						mask3));
 		int c = _mm_extract_epi16(counts, 7);
-		int source_advance = !(c & 0x0200) ? 16 : !(c & 0x02) ? 15 : 14;
+		int src_adv = !(c & 0x0200) ? 16 : !(c & 0x02) ? 15 : 14;
 
 		vec high_bits = _mm_and_si128(chunk_high, V(0xf8));
 		if (!_mm_testz_si128(mask3,
@@ -317,8 +332,8 @@ JNIEXPORT jint JNICALL Java_com_nc_gs_io_UTF8Util_utf8BytesToArray(JNIEnv* env,
 		storeVecU((vec*) (dst + 8), utf16_high);
 
 		int s = _mm_extract_epi32(shifts, 3);
-		int dst_advance = source_advance
-				- (0xff & (s >> 8 * (3 - 16 + source_advance)));
+		int dst_adv = src_adv
+				- (0xff & (s >> 8 * (3 - 16 + src_adv)));
 
 #if defined(__SSE4_2__)
 		//		const int check_mode = 5 /*_SIDD_UWORD_OPS | _SIDD_CMP_RANGES*/;
@@ -338,12 +353,13 @@ JNIEXPORT jint JNICALL Java_com_nc_gs_io_UTF8Util_utf8BytesToArray(JNIEnv* env,
 			break;
 #endif
 
-		dst += dst_advance;
-		src += source_advance;
-		len -= dst_advance;
+		dst += dst_adv;
+		src += src_adv;
+		len -= dst_adv;
+		rem -= src_adv;
 	}
 
-	SCALAR_LOOP(c0, c1, c2, src, dst, len);
+	SCALAR_LOOP(c0, c1, c2, src, dst, len, rem);
 
 	(*env)->ReleasePrimitiveArrayCritical(env, source, _src, JNI_ABORT);
 	(*env)->ReleasePrimitiveArrayCritical(env, target, _dst, JNI_ABORT);
