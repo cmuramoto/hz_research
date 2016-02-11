@@ -231,6 +231,7 @@ JNIEXPORT jint JNICALL Java_com_nc_gs_io_UTF8Util_utf8BytesToArray(JNIEnv* env,
 			dst += GS_CHUNK_SIZE;
 			src += GS_CHUNK_SIZE;
 			len -= GS_CHUNK_SIZE;
+			rem -= GS_CHUNK_SIZE;
 			continue;
 		}
 
