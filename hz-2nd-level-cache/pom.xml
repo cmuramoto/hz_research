@@ -1,0 +1,163 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.nc</groupId>
+	<artifactId>hz-2nd-level-cache</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>domain</module>
+		<module>test-3.5</module>
+		<module>test-3.6</module>
+	</modules>
+
+	<properties>
+		<commonsDbcpVersion>1.4</commonsDbcpVersion>
+
+		<dom4jVersion>1.6.1</dom4jVersion>
+
+		<h2Version>1.4.186</h2Version>
+		<hibernateAnnotationsVersion>3.4.0.GA</hibernateAnnotationsVersion>
+		<hibernateCommonsAnnotationsVersion>3.2.0.Final</hibernateCommonsAnnotationsVersion>
+		<hibernateVersion>3.6.10.Final</hibernateVersion>
+		<hibernateJpaVersion>1.0.1.Final</hibernateJpaVersion>
+		<hsqldbVersion>1.8.0.10</hsqldbVersion>
+
+		<javassistGroup>org.javassist</javassistGroup>
+		<javassistVersion>3.18.2-GA</javassistVersion>
+		<junitVersion>4.11</junitVersion>
+
+		<slf4jVersion>1.7.10</slf4jVersion>
+		<springVersion>4.0.6.RELEASE</springVersion>
+
+	</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.1</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>${commonsDbcpVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernateVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+			<version>${hibernateJpaVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>${dom4jVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-commons-annotations</artifactId>
+			<version>${hibernateCommonsAnnotationsVersion}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${springVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4jVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>${hsqldbVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>${javassistVersion}</version>
+		</dependency>
+
+		<!-- No need for transactional context to reproduce the bug -->
+		<!--<dependency> <groupId>org.jboss.transaction</groupId> <artifactId>jboss-jts-common</artifactId> 
+			<version>4.2.3.SP5</version> </dependency> <dependency> <groupId>org.jboss.transaction</groupId> 
+			<artifactId>jboss-jta</artifactId> <version>4.2.3.SP5</version> </dependency> -->
+
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junitVersion}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${springVersion}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>
