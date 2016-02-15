@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<hazelcast xmlns="http://www.hazelcast.com/schema/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.5.xsd ">
+	<properties>
+		<!--property name="hazelcast.logging.type">slf4j</property -->
+		<property name="hazelcast.wait.seconds.before.join">5</property>
+		<property name="hazelcast.max.wait.seconds.before.join">60</property>
+		<property name="hazelcast.backpressure.enabled">true</property>
+		<property name="hazelcast.heartbeat.interval.seconds">2</property>
+		<property name="hazelcast.max.no.heartbeat.seconds">120</property>
+		<property name="hazelcast.restart.on.max.idle">true</property>
+		<property name="hazelcast.io.thread.count">4</property>
+		<property name="hazelcast.socket.bind.any">false</property>
+		<property name="hazelcast.member.list.publish.interval.seconds">30</property>
+	</properties>
+	<management-center enabled="false">http://localhost:8080/mancenter
+	</management-center>
+	<group>
+		<name>hz</name>
+		<password>hz</password>
+	</group>
+	<network>
+		<port auto-increment="true">9530</port>
+		<interfaces enabled="true">
+			<interface>127.0.0.1</interface>
+		</interfaces>
+		<join>
+			<tcp-ip connection-timeout-seconds="10" enabled="true">
+				<interface>127.0.0.1</interface>
+			</tcp-ip>
+			<multicast enabled="false" />
+			<aws enabled="false" />
+		</join>
+	</network>
+	<map name="org.hibernate.cache.UpdateTimestampsCache">
+		<eviction-policy>LRU</eviction-policy>
+		<in-memory-format>OBJECT</in-memory-format>
+		<max-size>500</max-size>
+		<time-to-live-seconds>0</time-to-live-seconds>
+		<max-idle-seconds>0</max-idle-seconds>
+		<read-backup-data>false</read-backup-data>
+		<near-cache>
+			<eviction-policy>LRU</eviction-policy>
+			<in-memory-format>OBJECT</in-memory-format>
+			<max-size>500</max-size>
+			<max-idle-seconds>0</max-idle-seconds>
+			<time-to-live-seconds>0</time-to-live-seconds>
+		</near-cache>
+	</map>
+	<map name="UNVERSIONED_REGION">
+		<eviction-policy>LRU</eviction-policy>
+		<in-memory-format>OBJECT</in-memory-format>
+		<max-size>1000</max-size>
+		<time-to-live-seconds>0</time-to-live-seconds>
+		<max-idle-seconds>0</max-idle-seconds>
+		<read-backup-data>false</read-backup-data>
+		<near-cache>
+			<eviction-policy>LRU</eviction-policy>
+			<in-memory-format>OBJECT</in-memory-format>
+			<max-size>1000</max-size>
+			<max-idle-seconds>0</max-idle-seconds>
+			<time-to-live-seconds>0</time-to-live-seconds>
+		</near-cache>
+	</map>
+	<map name="VERSIONED_REGION_INT_TYPE">
+		<eviction-policy>LRU</eviction-policy>
+		<in-memory-format>OBJECT</in-memory-format>
+		<max-size>10000</max-size>
+		<time-to-live-seconds>0</time-to-live-seconds>
+		<max-idle-seconds>0</max-idle-seconds>
+		<read-backup-data>false</read-backup-data>
+		<near-cache>
+			<eviction-policy>LRU</eviction-policy>
+			<in-memory-format>OBJECT</in-memory-format>
+			<max-size>1000</max-size>
+			<max-idle-seconds>0</max-idle-seconds>
+			<time-to-live-seconds>0</time-to-live-seconds>
+		</near-cache>
+	</map>
+	<serialization>
+		<use-native-byte-order>true</use-native-byte-order>
+		<allow-unsafe>false</allow-unsafe>
+	</serialization>
+</hazelcast>

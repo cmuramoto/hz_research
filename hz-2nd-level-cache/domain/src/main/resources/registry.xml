@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<context:component-scan base-package="com.nc.hz.support" />
+	<context:component-scan base-package="com.nc.hz.service" />
+
+	<!-- <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"> 
+		<property name="transactionManager"> <bean class="com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionManagerImple" 
+		/> </property> <property name="allowCustomIsolationLevels" value="true" /> 
+		</bean> -->
+
+
+	<!-- <tx:annotation-driven /> -->
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName">
+			<value>org.hsqldb.jdbcDriver</value>
+		</property>
+		<property name="username">
+			<value>sa</value>
+		</property>
+		<property name="connectionProperties">
+			<props>
+				<prop key="server.trace">false</prop>
+				<prop key="server.silent">false</prop>
+			</props>
+		</property>
+		<property name="url">
+			<value>jdbc:hsqldb:mem:test</value>
+		</property>
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan">
+			<array>
+				<value>com.nc.hz.domain.mixed_regions</value>
+			</array>
+		</property>
+
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.session_factory_name">F</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+				<prop key="hibernate.jdbc.use_get_generated_keys">true</prop>
+				<prop key="hibernate.jdbc.batch_size">50</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.use_minimal_puts">true</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.cache.hazelcast.instance_name">HZ</prop>
+				<prop key="hibernate.cache.hazelcast.configuration_file_path">hazelcast-config.xml</prop>
+				<prop key="hibernate.cache.region.factory_class">
+					com.hazelcast.hibernate.HazelcastLocalCacheRegionFactory
+				</prop>
+				<prop key="javax.persistence.validation.mode">none</prop>
+				<!-- <prop key="jta.UserTransaction">UserTransaction</prop> -->
+			</props>
+		</property>
+
+	</bean>
+
+	<bean id="hibernateOperations" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="cacheQueries" value="false" />
+	</bean>
+
+</beans>
