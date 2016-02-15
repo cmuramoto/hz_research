@@ -25,24 +25,6 @@ public class TreeService implements ITreeService {
 		dc.createAlias("nodes", "nodes", CriteriaSpecification.LEFT_JOIN);
 
 		return (List<VersionedTree>) ops.findByCriteria(dc);
-		// DetachedCriteria criteria =
-		// DetachedCriteria.forClass(VersionedTree.class).add(Property.forName("label").eq(label));
-		// criteria.setProjection(Projections.id());
-		//
-		// List<Integer> ids = (List<Integer>) ops.findByCriteria(criteria);
-		// List<VersionedTree> rv;
-		//
-		// if (!ids.isEmpty()) {
-		// DetachedCriteria dc = DetachedCriteria.forClass(VersionedTree.class);
-		// dc.createAlias("nodes", "nodes", CriteriaSpecification.LEFT_JOIN);
-		// dc.add(Property.forName("id").in(ids));
-		// dc.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
-		// rv = (List<VersionedTree>) ops.findByCriteria(dc);
-		// } else {
-		// rv = Collections.emptyList();
-		// }
-		//
-		// return rv;
 	}
 
 	@Override

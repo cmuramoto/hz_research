@@ -22,7 +22,7 @@ public class TestSupport {
 	@Autowired
 	ITreeService service;
 
-	public void test_1667() throws IOException {
+	public void test_7517() throws IOException {
 		VersionedTree tree = new VersionedTree();
 		tree.setLabel("tree");
 		UnversionedNode node = new UnversionedNode();

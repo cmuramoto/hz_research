@@ -19,6 +19,6 @@ public class TestVersionedTree {
 
 	@Test(expected = NullPointerException.class)
 	public void run() throws IOException {
-		support.test_1667();
+		support.test_7517();
 	}
 }
